@@ -29,7 +29,7 @@ mpremote mip install github:SainsburyWellcomeCentre/micropython-dynamixel
 
 ### Manual
 
-Copy the `dynamixel/` folder to the `lib/` directory on your device.
+Copy the contents of `src/` to `lib/dynamixel/` on your device.
 
 ## Quick Start
 

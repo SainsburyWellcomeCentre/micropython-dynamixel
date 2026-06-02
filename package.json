@@ -1,11 +1,11 @@
 {
   "urls": [
-    ["src/__init__.py", "dynamixel/__init__.py"],
-    ["src/dynamixel.py", "dynamixel/dynamixel.py"],
-    ["src/packet.py", "dynamixel/packet.py"],
-    ["src/table.py", "dynamixel/table.py"],
-    ["src/model.py", "dynamixel/model.py"],
-    ["src/crc.py", "dynamixel/crc.py"]
+    ["dynamixel/__init__.py", "dynamixel/__init__.py"],
+    ["dynamixel/dynamixel.py", "dynamixel/dynamixel.py"],
+    ["dynamixel/packet.py", "dynamixel/packet.py"],
+    ["dynamixel/table.py", "dynamixel/table.py"],
+    ["dynamixel/model.py", "dynamixel/model.py"],
+    ["dynamixel/crc.py", "dynamixel/crc.py"]
   ],
   "version": "0.1"
 }
