@@ -4,8 +4,8 @@ Eagerly imports the two most-used classes; everything else is loaded on
 first access via ``__getattr__`` to save RAM on constrained boards.
 """
 
-from ..dynamixel import Dynamixel
-from ..model import DynamixelModel
+from .dynamixel import Dynamixel
+from .model import DynamixelModel
 
 # Lazy-loaded symbols — mapped to their submodule name.
 _attrs = {
