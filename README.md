@@ -1,122 +1,89 @@
-# [Project Name]
+# micropython-dynamixel
 
-> **📝 Template Instructions:** Replace all bracketed placeholders `[like this]` with your project-specific information. Remove sections that don't apply to your project. Delete this instruction block when you're done.
+MicroPython driver for [Dynamixel](https://www.robotis.com/en/dynamixel.php) servo motors.  Supports **Protocol 1.0** and **Protocol 2.0** over UART.
 
-![GitHub release](https://img.shields.io/github/v/release/SainsburyWellcomeCentre/[your-repo].svg)
+## Features
 
-[Brief one-line description of what your project does]
+- Property-based API for reading/writing motor registers (position, velocity,
+  PWM, current, LED, operating mode, etc.).
+- Automatic control-table selection via model number returned by `ping()`.
+- Covers AX, DX, RX, EX, MX, XL, XC, XM, XH, XD, XW, PRO, PRO+, and Y series
+  motors.
 
-> **Note:** [Any important warnings or notes about the project]
+## Installation
 
-<img src=".img/[main-image].png" alt="[Image Description]" width="800"/>
+### Via `mip` (network-capable boards)
 
-[Detailed description of the project, its purpose, and the problem it solves. Include context about why this project is useful and what applications it serves.]
-
-## 🔧 Features
-
-- [Feature 1 - describe key functionality]
-- [Feature 2 - describe key functionality]
-- [Feature 3 - describe key functionality]
-- [Feature 4 - describe key functionality]
-- [Add/remove features as needed]
-
-## 🌐 View Online (eCAD)
-
-View the complete electronic design project online via [Altium 365 Viewer](https://sainsburywellcomecentre.github.io/fablabs-documentation/#[your-repo])
-
-## 🚀 Getting Started
-
-[Provide step-by-step instructions for initial setup and basic usage]
-
-1. [First step - setup/installation]
-2. [Second step - configuration]
-3. [Third step - basic operation]
-
-<img src=".img/[usage-image].png" alt="[Usage Description]" width="300"/>
-
-[Additional usage instructions, tips, or references to external resources]
-
-[If applicable, mention any measurement tools or validation methods]
-
-## ⚙️ Configuration & Tuning _(if applicable)_
-
-[If your project requires calibration or fine-tuning, describe the process here]
-
-## 🔧 [Configuration/Calibration] Guidelines
-
-- [Step 1 - describe calibration procedure]
-- [Step 2 - describe parameter adjustment]
-- [Operating ranges and recommended settings]
-  > [Important notes or warnings about configuration]
-
-<div align="center">
-  <img src=".img/[configuration-image].png" alt="[Configuration Description]" width="600"/>
-</div>
-
-## 💻 Software Requirements
-
-To access the source design files:
-
-- **[eCAD Software] [Version]** or newer _(for electronic design files)_  
-  Academic licenses available via [[Software] Education]([link])
-- **[mCAD Software] [Version]** or newer _(for mechanical design files)_  
-  Academic licenses via [[Software] Education]([link])
-- **[Additional Software]** _(if applicable for firmware/programming)_
-
-## 📜 License
-
-**Sainsbury Wellcome Centre hardware is released under** [Creative Commons Attribution-ShareAlike 4.0 International](http://creativecommons.org/licenses/by-sa/4.0/).
-
-You are free to:
-
-- **Share** — copy and redistribute the material in any medium or format
-- **Adapt** — remix, transform, and build upon the material for any purpose
-
-Under the following terms:
-
-- **Attribution** — Give appropriate credit, link to the license, and indicate changes.
-- **ShareAlike** — Distribute your contributions under the same license.
-- **No additional restrictions** — Don’t apply legal or technological measures that prevent others from doing anything the license permits.
-
-> For the full legal text, see [LICENSE](LICENSE).
-
-## 📚 References _(if applicable)_
-
-[If your project is based on or references academic work, list citations here]
-
-```bibtex
-@ARTICLE{AuthorYear,
-  title     = "[Paper Title]",
-  author    = "[Author Names]",
-  journal   = "[Journal Name]",
-  volume    = "[Volume]",
-  number    = "[Number]",
-  pages     = "[Pages]",
-  year      = "[Year]",
-  url       = "[URL]",
-  doi       = "[DOI]"
-}
+```python
+import mip
+mip.install("github:org/micropython-dynamixel")
 ```
 
-## 🤝 Contributing
+### Via `mpremote` (from your PC)
 
-[If you want to accept contributions, add guidelines here]
+```bash
+mpremote mip install github:org/micropython-dynamixel
+```
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
+> Replace `org/micropython-dynamixel` with the actual GitHub path of this
+> repository.
 
-## ❤ Contributors
+### Manual
 
- <a href = "https://github.com/sainsburywellcomecentre/[your-repo]/graphs/contributors">
-   <img src = "https://contrib.rocks/image?repo=sainsburywellcomecentre/[your-repo]" alt="Contributors"/>
- </a>
+Copy the `dynamixel/` folder to the `lib/` directory on your device.
 
-## 📧 Contact
+## Quick Start
 
-[Contact information or support channels]
+```python
+from machine import UART
+from dynamixel import Dynamixel, DynamixelModel
 
-- **Author**: [Your Name]
-- **Email**: [contact-email]
-- **Website**: [FabLabs Documentation](https://sainsburywellcomecentre.github.io/fablabs-documentation/#[your-repo])
+# Initialise UART (pins depend on your board)
+uart = UART(0, baudrate=57600, tx=0, rx=1)
+
+# Create a driver instance (Protocol 2.0)
+dxl = Dynamixel(uart, protocol_version=2)
+
+# Scan for a motor at 57600 baud
+if dxl.ping(baudrate=57600):
+    print("Motor found!")
+
+    # Enable torque and move to a position
+    dxl.torque_enabled = True
+    dxl.goal_position = 2048
+
+    # Read present position
+    print("Position:", dxl.current_position)
+```
+
+## API Overview
+
+| Property / Method          | Description                              |
+| -------------------------- | ---------------------------------------- |
+| `ping(baudrate, id=254)`   | Scan for a motor; loads control table    |
+| `reset()`                  | Factory-reset the motor                  |
+| `torque_enabled`           | Enable / disable motor output            |
+| `led`                      | LED on / off                             |
+| `operating_mode`           | Operating mode (position, velocity, …)   |
+| `goal_position`            | Goal position (raw ticks)                |
+| `goal_position_rel`        | Goal position normalised to 0.0 – 1.0   |
+| `goal_velocity`            | Goal velocity (raw units, signed)        |
+| `goal_pwm`                 | Goal PWM (signed)                        |
+| `current_position`         | Present position (signed)                |
+| `current_velocity`         | Present velocity (signed)                |
+| `profile_velocity`         | Profile velocity for trajectory gen.     |
+| `position_limit_low/high`  | Position limits                          |
+| `velocity_limit`           | Velocity limit                           |
+
+See the source for the complete list of properties.
+
+## Supported Models
+
+AX-12A · AX-12W · AX-18A · DX-113 · DX-116 · DX-117 · RX-10 · RX-24F ·
+RX-28 · RX-64 · EX-106 · MX-12W · MX-28 · MX-64 · MX-106 · MX-28(2.0) ·
+MX-64(2.0) · MX-106(2.0) · XL-320 · XL-330 · XC-330 · XC-430 · XL-430 ·
+XM-430 · XH-430 · XD-430 · XM-540 · XH-540 · XD-540 · XW-430 · XW-540 ·
+PRO series · PRO+ series · Y series
+
+## License
+
