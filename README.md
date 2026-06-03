@@ -1,59 +1,17 @@
 # micropython-dynamixel
 
-![GitHub release](https://img.shields.io/github/v/release/SainsburyWellcomeCentre/micropython-dynamixel.svg)
+[![GitHub release](https://img.shields.io/github/v/release/SainsburyWellcomeCentre/micropython-dynamixel?style=flat-square&cacheSeconds=3600)](https://github.com/SainsburyWellcomeCentre/micropython-dynamixel/releases)
+[![GitHub issues](https://img.shields.io/github/issues/SainsburyWellcomeCentre/micropython-dynamixel?style=flat-square)](https://github.com/SainsburyWellcomeCentre/micropython-dynamixel/issues)
 
 MicroPython driver for [Dynamixel](https://www.robotis.com/en/dynamixel.php) servo motors. Supports **Protocol 1.0** and **Protocol 2.0** over UART.
 
-## Features
+## Supported Models
 
-- Property-based API for reading/writing motor registers (position, velocity,
-  PWM, current, LED, operating mode, etc.).
-- Automatic control-table selection via model number returned by `ping()`.
-- Covers AX, DX, RX, EX, MX, XL, XC, XM, XH, XD, XW, PRO, PRO+, and Y series
-  motors.
-
-## Installation
-
-### Via `mip` (network-capable boards)
-
-```python
-import mip
-mip.install("github:SainsburyWellcomeCentre/micropython-dynamixel")
-```
-
-### Via `mpremote` (from your PC)
-
-```bash
-mpremote mip install github:SainsburyWellcomeCentre/micropython-dynamixel
-```
-
-### Manual
-
-Copy the contents of `src/` to `lib/dynamixel/` on your device.
-
-## Quick Start
-
-```python
-from machine import UART
-from dynamixel import Dynamixel, DynamixelModel
-
-# Initialise UART (pins depend on your board)
-uart = UART(0, baudrate=57600, tx=0, rx=1)
-
-# Create a driver instance (Protocol 2.0)
-dxl = Dynamixel(uart, protocol_version=2)
-
-# Scan for a motor at 57600 baud
-if dxl.ping(baudrate=57600):
-    print("Motor found!")
-
-    # Enable torque and move to a position
-    dxl.torque_enabled = True
-    dxl.goal_position = 2048
-
-    # Read present position
-    print("Position:", dxl.current_position)
-```
+AX-12A · AX-12W · AX-18A · DX-113 · DX-116 · DX-117 · RX-10 · RX-24F ·
+RX-28 · RX-64 · EX-106 · MX-12W · MX-28 · MX-64 · MX-106 · MX-28(2.0) ·
+MX-64(2.0) · MX-106(2.0) · XL-320 · XL-330 · XC-330 · XC-430 · XL-430 ·
+XM-430 · XH-430 · XD-430 · XM-540 · XH-540 · XD-540 · XW-430 · XW-540 ·
+PRO series · PRO+ series · Y series
 
 ## API Overview
 
@@ -76,17 +34,67 @@ if dxl.ping(baudrate=57600):
 
 See the source for the complete list of properties.
 
-## Supported Models
+## Installation
 
-AX-12A · AX-12W · AX-18A · DX-113 · DX-116 · DX-117 · RX-10 · RX-24F ·
-RX-28 · RX-64 · EX-106 · MX-12W · MX-28 · MX-64 · MX-106 · MX-28(2.0) ·
-MX-64(2.0) · MX-106(2.0) · XL-320 · XL-330 · XC-330 · XC-430 · XL-430 ·
-XM-430 · XH-430 · XD-430 · XM-540 · XH-540 · XD-540 · XW-430 · XW-540 ·
-PRO series · PRO+ series · Y series
+### Via `mip` (network-capable boards)
+
+```python
+import mip
+mip.install("github:SainsburyWellcomeCentre/micropython-dynamixel")
+```
+
+### Via `mpremote` (from your PC)
+
+```bash
+mpremote mip install github:SainsburyWellcomeCentre/micropython-dynamixel
+```
+
+### Manual
+
+Copy the contents of `src/` to `lib/dynamixel/` on your device.
+
+## Quick Start
+
+If you don't know the baudrate of your motor, run `example/scan.py` to find it. Set the `UART_ID`, `TX_PIN`, and `RX_PIN` variables to match your board's pinout. The script will scan through common baudrates and print the model of any motor it finds.
+
+```bash
+mpremote cp -r example/scan.py :main.py
+mpremote run main.py
+```
+
+If you know the baudrate and ID of your motor, you can skip the scan and run the following example code:
+
+```python
+from machine import UART
+from dynamixel import Dynamixel, DynamixelModel
+import time
+
+# Initialise UART (pins depend on your board)
+uart = UART(0, baudrate=57600, tx=0, rx=1)
+
+# Create a driver instance for XM430_W350_T (Protocol 2.0)
+dxl = Dynamixel(uart, model=DynamixelModel.XM430_W350_T, id=1, protocol_version=2)
+
+dxl.torque_enabled = False
+dxl.operating_mode = 3  # 3 = Position Control Mode (single-turn)
+dxl.torque_enabled = True
+
+while True:
+    dxl.goal_position += 2048
+    print("Current Position:", dxl.current_position)
+    time.sleep(1)
+```
 
 ## License
 
 **Sainsbury Wellcome Centre code, firmware, and software is released under the [BSD 3-Clause License](https://opensource.org/license/bsd-3-clause).**
+
+## 📚 Credits
+
+This library references the following resources:
+
+- [Dynamixel2Arduino](https://github.com/ROBOTIS-GIT/dynamixel2arduino)
+- [DynamixelSDK](https://github.com/ROBOTIS-GIT/DynamixelSDK/tree/main)
 
 ## 🤝 Contributing
 

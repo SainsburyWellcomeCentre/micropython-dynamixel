@@ -44,12 +44,12 @@ class DynamixelModel:
     XXC430_W250 = 1160
 
     # ── XL / XC 330 series ───────────────────────────────────────────
-    XL330_M288 = 1190
-    XL330_M077 = 1200
-    XC330_M181 = 1210
-    XC330_M288 = 1220
-    XC330_T181 = 1230
-    XC330_T288 = 1240
+    XL330_M077 = 1190
+    XL330_M288 = 1200
+    XC330_T181 = 1210
+    XC330_T288 = 1220
+    XC330_M181 = 1230
+    XC330_M288 = 1240
 
     # ── XM / XH / XD 430 series ─────────────────────────────────────
     XM430_W210 = 1030
@@ -72,43 +72,58 @@ class DynamixelModel:
     XD540_T270 = 1101
 
     # ── XW series ────────────────────────────────────────────────────
-    XW540_T140 = 1170
-    XW540_T260 = 1180
+    XW540_T140 = 1180
+    XW540_T260 = 1170
     XW430_T200 = 1280
     XW430_T333 = 1270
 
     # ── PRO series (R firmware) ──────────────────────────────────────
     PRO_M42_10_S260_R = 43288
-    PRO_M54_40_S250_R = 54024
-    PRO_M54_60_S250_R = 54152
+    PRO_M54_40_S250_R = 46096
+    PRO_M54_60_S250_R = 46352
     PRO_H42_20_S300_R = 51200
     PRO_H54_100_S500_R = 53768
-    PRO_H54_200_S500_R = 53896
+    PRO_H54_200_S500_R = 54024
 
     # ── PRO series (RA firmware) / PRO+ ──────────────────────────────
-    PRO_M42_10_S260_RA = 46096
-    PRO_M54_40_S250_RA = 46352
-    PRO_M54_60_S250_RA = 46480
-    PRO_H42_20_S300_RA = 46352
-    PRO_H54_100_S500_RA = 46608
-    PRO_H54_200_S500_RA = 46736
-    PRO_H42P_020_S300_R = 2100
-    PRO_H54P_100_S500_R = 2110
-    PRO_H54P_200_S500_R = 2120
-    PRO_M42P_010_S260_R = 2200
-    PRO_M54P_040_S250_R = 2210
-    PRO_M54P_060_S250_R = 2220
+    PRO_M42_10_S260_RA = 43289
+    PRO_M54_40_S250_RA = 46097
+    PRO_M54_60_S250_RA = 46353
+    PRO_H42_20_S300_RA = 51201
+    PRO_H54_100_S500_RA = 53761
+    PRO_H54_200_S500_RA = 54025
+    PRO_H42P_020_S300_R = 2000
+    PRO_H54P_100_S500_R = 2010
+    PRO_H54P_200_S500_R = 2020
+    PRO_M42P_010_S260_R = 2100
+    PRO_M54P_040_S250_R = 2110
+    PRO_M54P_060_S250_R = 2120
 
     # ── Y series ─────────────────────────────────────────────────────
-    YM070_210_M001_RH = 1110
-    YM070_210_B001_RH = 1111
-    YM070_210_R051_RH = 1120
-    YM070_210_R099_RH = 1121
-    YM070_210_A051_RH = 1130
-    YM070_210_A099_RH = 1131
-    YM080_230_M001_RH = 1210
-    YM080_230_B001_RH = 1211
-    YM080_230_R051_RH = 1220
-    YM080_230_R099_RH = 1221
-    YM080_230_A051_RH = 1230
-    YM080_230_A099_RH = 1231
+    YM070_210_M001_RH = 4000
+    YM070_210_B001_RH = 4010
+    YM070_210_R051_RH = 4020
+    YM070_210_R099_RH = 4030
+    YM070_210_A051_RH = 4040
+    YM070_210_A099_RH = 4050
+    YM080_230_M001_RH = 4120
+    YM080_230_B001_RH = 4130
+    YM080_230_R051_RH = 4140
+    YM080_230_R099_RH = 4150
+    YM080_230_A051_RH = 4160
+    YM080_230_A099_RH = 4170
+
+    @classmethod
+    def get_name(cls, model_number):
+        """Get the model name for a given model number.
+        
+        Args:
+            model_number: The model number (integer).
+            
+        Returns:
+            The model name as a string, or "UNKNOWN" if not found.
+        """
+        for name, number in cls.__dict__.items():
+            if isinstance(number, int) and number == model_number:
+                return name
+        return "UNKNOWN"

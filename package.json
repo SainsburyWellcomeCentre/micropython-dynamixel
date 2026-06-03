@@ -7,5 +7,5 @@
     ["dynamixel/model.py", "dynamixel/model.py"],
     ["dynamixel/crc.py", "dynamixel/crc.py"]
   ],
-  "version": "0.1"
+  "version": "1.0.0"
 }
