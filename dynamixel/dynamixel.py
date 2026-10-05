@@ -248,6 +248,8 @@ class Dynamixel:
         self.id = id
         self._send_packet(_INS_PING, _PING_PARAM)
 
+        time.sleep(0.1)  # give the motor a moment to respond
+
         rx = self._read_buffer(log_errors=False)
         if rx is None:
             return False
